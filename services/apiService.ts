@@ -25,6 +25,7 @@ const DB_KEY = 'atlas_app_db';
 const API_KEYS_DB_KEY = 'atlas_api_keys';
 const SESSION_KEY = 'atlas_current_user';
 const SIMULATED_LATENCY = 300; // ms
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // --- Database Structure ---
 interface AppDatabase {
@@ -513,17 +514,39 @@ export const updateModelConfig = async (config: ModelConfig): Promise<{ success:
 
 // Company Info
 export const getCompanyInfo = async (): Promise<CompanyInfo> => {
-  await delay(SIMULATED_LATENCY / 2);
-  const db = getDB();
-  return db.companyInfo;
+  try {
+      const response = await fetch(`${API_URL}/config/company`, {
+          method: 'GET',
+          credentials: 'include'
+      });
+      if (!response.ok) throw new Error('Failed to fetch company info');
+      return await response.json();
+  } catch (error) {
+      console.error('Error fetching company info:', error);
+      // Fallback to default
+      return {
+          logo: null,
+          en: { name: 'Atlas Corp.', about: 'Welcome to the Atlas AI Assistant.' },
+          fa: { name: 'شرکت اطلس', about: 'به دستیار هوش مصنوعی اطلس خوش آمدید.' }
+      };
+  }
 };
 
 export const updateCompanyInfo = async (info: CompanyInfo): Promise<{ success: boolean }> => {
-    await delay(SIMULATED_LATENCY);
-    const db = getDB();
-    db.companyInfo = info;
-    saveDB(db);
-    return { success: true };
+    try {
+        const response = await fetch(`${API_URL}/config/company`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(info)
+        });
+        if (!response.ok) throw new Error('Failed to update company info');
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error updating company info:', error);
+        return { success: false };
+    }
 };
 
 // Panel Config
