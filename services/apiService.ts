@@ -551,17 +551,49 @@ export const updateCompanyInfo = async (info: CompanyInfo): Promise<{ success: b
 
 // Panel Config
 export const getPanelConfig = async (): Promise<PanelConfig> => {
-  await delay(SIMULATED_LATENCY / 2);
-  const db = getDB();
-  return db.panelConfig;
+  try {
+      const response = await fetch(`${API_URL}/config/panel`, {
+          method: 'GET',
+          credentials: 'include'
+      });
+      if (!response.ok) throw new Error('Failed to fetch panel config');
+      return await response.json();
+  } catch (error) {
+      console.error('Error fetching panel config:', error);
+      // Fallback to default
+      return {
+          aiNameEn: 'Atlas',
+          aiNameFa: 'اطلس',
+          chatHeaderTitleEn: 'Conversation with Atlas',
+          chatHeaderTitleFa: 'گفتگو با اطلس',
+          chatPlaceholderEn: 'Type your message here...',
+          chatPlaceholderFa: 'پیام خود را اینجا بنویسید...',
+          welcomeMessageEn: 'Hello! How can I help you today?',
+          welcomeMessageFa: 'سلام! چطور می‌توانم امروز به شما کمک کنم؟',
+          aiAvatar: null,
+          privacyPolicyEn: 'This is the default Privacy Policy.',
+          privacyPolicyFa: 'این متن پیش‌فرض سیاست حفظ حریم خصوصی است.',
+          termsOfServiceEn: 'These are the default Terms of Service.',
+          termsOfServiceFa: 'این متن پیش‌فرض شرایط خدمات است.'
+      };
+  }
 };
 
 export const updatePanelConfig = async (config: PanelConfig): Promise<{ success: boolean }> => {
-    await delay(SIMULATED_LATENCY);
-    const db = getDB();
-    db.panelConfig = config;
-    saveDB(db);
-    return { success: true };
+    try {
+        const response = await fetch(`${API_URL}/config/panel`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(config)
+        });
+        if (!response.ok) throw new Error('Failed to update panel config');
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error updating panel config:', error);
+        return { success: false };
+    }
 };
 
 
