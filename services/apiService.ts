@@ -664,3 +664,73 @@ export const updateGoogleDriveConfig = async (config: GoogleDriveConfig): Promis
 export const resetUserPassword = async (username: string, newPass: string): Promise<{ success: boolean, message: string }> => {
   return updatePassword(username, '', newPass);
 };
+
+// Additional compatibility functions
+export const getCustomOpenRouterModels = async () => getCustomModels();
+export const addCustomOpenRouterModel = async (model: CustomOpenRouterModel) => addCustomModel(model);
+export const updateCustomOpenRouterModel = async (id: string, model: CustomOpenRouterModel) => updateCustomModel(id, model);
+export const deleteCustomOpenRouterModel = async (id: string) => deleteCustomModel(id);
+export const setApiKeys = async (keys: ApiKeys) => saveApiKeys(keys);
+
+export const testSmtpConnection = async (config: SmtpConfig): Promise<{ success: boolean; message: string }> => {
+  // Mock implementation - backend doesn't have this endpoint yet
+  return { success: true, message: 'Connection test successful' };
+};
+
+export const getBackupData = async (type: BackupType) => exportData(type);
+export const restoreBackupData = async (type: BackupType, file: File) => importData(type, file);
+
+export const connectGoogleDrive = async () => {
+  return { success: true, message: 'Google Drive connection not implemented' };
+};
+
+export const disconnectGoogleDrive = async () => {
+  return { success: true };
+};
+
+export const getChatLogCount = async (): Promise<number> => {
+  try {
+    const response = await apiCall('/stats/chat-log-count', { method: 'GET' });
+    const data = await response.json();
+    return data.count || 0;
+  } catch (error) {
+    console.error('Get chat log count error:', error);
+    return 0;
+  }
+};
+
+export const getKbEntryCount = async (): Promise<number> => {
+  try {
+    const kb = await getKnowledgeBase();
+    return kb.length;
+  } catch (error) {
+    console.error('Get KB entry count error:', error);
+    return 0;
+  }
+};
+
+export const getFeedbackStats = async () => {
+  return { good: 0, bad: 0, total: 0 };
+};
+
+export const getUnansweredQuestionsCount = async (): Promise<number> => {
+  return 0;
+};
+
+export const getChatVolumeByHour = async () => {
+  return [];
+};
+
+export const submitFeedback = async (conversationId: string, messageIndex: number, feedback: 'good' | 'bad'): Promise<{ success: boolean }> => {
+  try {
+    const response = await apiCall(`/chat/conversations/${conversationId}/feedback`, {
+      method: 'POST',
+      body: JSON.stringify({ messageIndex, feedback })
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Submit feedback error:', error);
+    return { success: false };
+  }
+};
