@@ -18,8 +18,8 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const loadTranslations = async () => {
       try {
         const [enResponse, faResponse] = await Promise.all([
-          fetch('./i18n/locales/en.json'),
-          fetch('./i18n/locales/fa.json')
+          fetch('/i18n/locales/en.json'),
+          fetch('/i18n/locales/fa.json')
         ]);
         if (!enResponse.ok || !faResponse.ok) {
             throw new Error(`HTTP error! status: ${enResponse.status} & ${faResponse.status}`);
@@ -51,7 +51,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const t = useCallback((key: string, options?: Record<string, string | number>): string => {
     if (!translations) {
-      return '...'; // Return a temporary string while loading
+      return ''; // Return empty string while loading to avoid layout shifts
     }
     let translation = translations[language][key] || key;
     if (options) {
@@ -63,8 +63,14 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, [language, translations]);
 
   if (!translations) {
-    // A temporary, non-translatable message is okay here since translations aren't loaded yet.
-    return <div className="flex items-center justify-center h-screen bg-slate-100"><p>Loading languages...</p></div>;
+    return (
+      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-slate-600 font-medium">Loading Atlas AI...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
