@@ -75,7 +75,7 @@
   "lastNameRequired": "نام خانوادگی الزامی است.",
   "emailRequired": "ایمیل الزامی است.",
   "passwordPlaceholderOptional": "برای حفظ رمز عبور فعلی، خالی بگذارید",
-  "roles.admin": "ادمین کل",
+  "roles.admin": "سوپر ادمین",
   "roles.manager": "مدیر",
   "roles.supervisor": "سرپرست",
   "roles.support": "پشتیبان",

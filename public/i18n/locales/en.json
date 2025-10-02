@@ -75,7 +75,7 @@
   "lastNameRequired": "Last name is required.",
   "emailRequired": "Email is required.",
   "passwordPlaceholderOptional": "Leave blank to keep current password",
-  "roles.admin": "Admin",
+  "roles.admin": "Super Admin",
   "roles.manager": "Manager",
   "roles.supervisor": "Supervisor",
   "roles.support": "Support Staff",
